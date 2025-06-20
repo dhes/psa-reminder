@@ -1,0 +1,39 @@
+{
+    "_id": "8a91cc48-2171-4541-94d1-6b09c69ef510",
+    "colName": "$apply",
+    "created": "2025-06-19T23:34:33.268Z",
+    "sortNum": 30000,
+    "folders": [],
+    "requests": [
+        {
+            "_id": "dee5ee48-9e21-429e-b22b-7a87c3b20a12",
+            "colId": "8a91cc48-2171-4541-94d1-6b09c69ef510",
+            "containerId": "",
+            "name": "psa-reminder",
+            "url": "PlanDefinition/psa-reminder/$apply?subject=Patient/minimal-test",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2025-06-19T23:43:42.680Z",
+            "modified": "2025-06-20T00:06:12.364Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "subject",
+                    "value": "Patient/minimal-test",
+                    "isPath": false
+                }
+            ]
+        }
+    ],
+    "settings": {
+        "headers": [
+            {
+                "name": "Content-Type",
+                "value": "application/fhir+json"
+            }
+        ],
+        "options": {
+            "baseUrl": "{{FHIR_SERVER_URL}}"
+        }
+    }
+}

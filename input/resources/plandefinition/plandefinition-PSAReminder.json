@@ -1,0 +1,116 @@
+{
+  "resourceType": "PlanDefinition",
+  "id": "psa-reminder",
+  "contained": [ {
+    "resourceType": "Library",
+    "id": "effective-data-requirements",
+    "name": "EffectiveDataRequirements",
+    "status": "active",
+    "type": {
+      "coding": [ {
+        "system": "http://terminology.hl7.org/CodeSystem/library-type",
+        "code": "module-definition"
+      } ]
+    },
+    "relatedArtifact": [ {
+      "type": "depends-on",
+      "display": "Library QICoreCommon",
+      "resource": "Library/QICoreCommon|4.0.000"
+    }, {
+      "type": "depends-on",
+      "display": "Library FHIRHelpers",
+      "resource": "Library/FHIRHelpers|4.4.000"
+    }, {
+      "type": "depends-on",
+      "display": "Code system LOINC",
+      "resource": "http://loinc.org"
+    } ],
+    "parameter": [ {
+      "name": "PSA Overdue",
+      "use": "out",
+      "min": 0,
+      "max": "1",
+      "type": "boolean"
+    } ],
+    "dataRequirement": [ {
+      "type": "Observation",
+      "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observation-lab" ],
+      "mustSupport": [ "code", "status", "status.value" ],
+      "codeFilter": [ {
+        "path": "code",
+        "code": [ {
+          "system": "http://loinc.org",
+          "code": "2857-1",
+          "display": "Prostate specific Ag [Mass/volume] in Serum or Plasma"
+        } ]
+      } ]
+    } ]
+  } ],
+  "extension": [ {
+    "url": "http://hl7.org/fhir/StructureDefinition/cqf-directReferenceCode",
+    "valueCoding": {
+      "system": "http://loinc.org",
+      "code": "2857-1",
+      "display": "Prostate specific Ag [Mass/volume] in Serum or Plasma"
+    }
+  }, {
+    "url": "http://hl7.org/fhir/StructureDefinition/cqf-logicDefinition",
+    "extension": [ {
+      "url": "libraryName",
+      "valueString": "PSAReminder"
+    }, {
+      "url": "name",
+      "valueString": "Most Recent PSA"
+    }, {
+      "url": "statement",
+      "valueString": "define \"Most Recent PSA\":\n  Last([LaboratoryResultObservation: \"PSA\"] O\n    where O.status = 'final'\n    sort by end of effective.toInterval()\n  )"
+    }, {
+      "url": "displaySequence",
+      "valueInteger": 0
+    } ]
+  }, {
+    "url": "http://hl7.org/fhir/StructureDefinition/cqf-logicDefinition",
+    "extension": [ {
+      "url": "libraryName",
+      "valueString": "PSAReminder"
+    }, {
+      "url": "name",
+      "valueString": "PSA Overdue"
+    }, {
+      "url": "statement",
+      "valueString": "define \"PSA Overdue\":\n  \"Most Recent PSA\" is null\n    or \n    end of \"Most Recent PSA\".effective.toInterval() before (Today() - 1 year)"
+    }, {
+      "url": "displaySequence",
+      "valueInteger": 1
+    } ]
+  }, {
+    "id": "effective-data-requirements",
+    "url": "http://hl7.org/fhir/uv/crmi/StructureDefinition/crmi-effectiveDataRequirements",
+    "valueCanonical": "#effective-data-requirements"
+  } ],
+  "url": "http://example.org/fhir/PlanDefinition/psa-reminder",
+  "version": "0.1.0",
+  "name": "PSAReminder",
+  "title": "Annual PSA Reminder",
+  "type": {
+    "coding": [ {
+      "system": "http://terminology.hl7.org/CodeSystem/plan-definition-type",
+      "code": "eca-rule"
+    } ]
+  },
+  "status": "active",
+  "date": "2025-06-19T13:46:10-10:00",
+  "library": [ "http://hopena.info/fhir/Library/PSAReminder" ],
+  "action": [ {
+    "title": "Order PSA Test",
+    "description": "Patient has not had a PSA test in the past year",
+    "textEquivalent": "Consider ordering PSA",
+    "condition": [ {
+      "kind": "applicability",
+      "expression": {
+        "language": "text/cql-identifier",
+        "expression": "PSA Overdue"
+      }
+    } ]
+  } ]
+}
